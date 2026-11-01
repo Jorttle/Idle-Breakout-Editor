@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+#include <string>
 
 class IdleSave {
     private:
@@ -130,37 +131,65 @@ class IdleSave {
         };
         class StandardBall : public Ball {
             private:
+                /* Variable names that have "speed" are only sometimes speed.
+                Plasma it is "range", and Scatter it is "extra balls". This is reflected in statOneName */
                 int damageDone = 0;
                 int speed = 0;
                 int power = 0;
                 bool milDamage = false;
+                // The speed and power that go into the export string aren't the true speed and power, so we need variables for each.
+                // trueSpeed = (speedMult * speed) + speedAdd
+                const int speedMult;
+                const int speedAdd;
+                int trueSpeed;
+                const int maxSpeedUpgrades;
+                // Similar with power except you can keep upgrading power indefinitly.
+                const int powerMult;
+                const int powerAdd;
+                int truePower;
+                const std::string statOneName;
             public:
-                StandardBall() {};
-                int getDamageDone() {return damageDone;}
-                void setDamageDone(int dmg) {
-                    if(dmg < 0) {throw std::invalid_argument("Damage must be at least 0");}
-                    damageDone = dmg;
-                }
-                int getSpeed() {return speed;}
-                void setSpeed(int sped) {
-                    if(sped < 0) {throw std::invalid_argument("Speed must be at least 0");}
-                    speed = sped;
-                }
-                int getPower() {return power;}
-                void setPower(int pwr) {
-                    if(pwr < 0) {throw std::invalid_argument("Power must be at least 0");}
-                    power = pwr;
-                }
-                bool getMilDamage() {return milDamage;}
+                // NEVER USE THE DEFAULT CONSTRUCTOR
+                StandardBall() :
+                    speedMult(0),
+                    speedAdd(0),
+                    maxSpeedUpgrades(0),
+                    trueSpeed(0),
+                    powerMult(0),
+                    powerAdd(0),
+                    truePower(0),
+                    statOneName("speed") {}
+                StandardBall(int speedMult, int speedAdd, int maxSpeedUpgrades, int powerMult, int powerAdd, std::string statOneName) :
+                    speedMult(speedMult),
+                    speedAdd(speedAdd),
+                    maxSpeedUpgrades(maxSpeedUpgrades),
+                    trueSpeed(speedAdd),
+                    powerMult(powerMult),
+                    powerAdd(powerAdd),
+                    truePower(powerAdd),
+                    statOneName(statOneName) {}
+                // Getters and Setters
+                int getDamageDone() const {return damageDone;}
+                void setDamageDone(int dmg);
+                int getSpeed() const {return speed;}
+                void setSpeed(int sped);
+                int getPower() const {return power;}
+                void setPower(int pwr);
+                bool getMilDamage() const {return milDamage;}
                 void setMilDamage(bool mlDmg) {milDamage = mlDmg;}
+                // These get and set the "True" values, or the values that show up in-game.
+                int getTrueSpeed() const {return trueSpeed;}
+                void setTrueSpeed(int sped);
+                int getTruePower() const {return truePower;}
+                void setTruePower(int pwr);
         };
         IdleSave() {};
-        StandardBall Basic;
-        StandardBall Plasma;
-        StandardBall Sniper;
-        StandardBall Scatter;
-        StandardBall Cannon;
-        StandardBall Poison;
+        StandardBall Basic = StandardBall(1, 1, 9, 1, 1, "speed");
+        StandardBall Plasma = StandardBall(1, 1, 6, 3, 3, "range");
+        StandardBall Sniper = StandardBall(1, 4, 6, 5, 5, "speed");
+        StandardBall Scatter = StandardBall(1, 2, 8, 10, 10, "extra balls");
+        StandardBall Cannon = StandardBall(2, 4, 6, 25, 50, "speed");
+        StandardBall Poison = StandardBall(2, 5, 5, 5, 5, "speed");
         Ball Snow;
         Ball Money;
 };

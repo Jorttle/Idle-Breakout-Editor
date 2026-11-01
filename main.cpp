@@ -19,7 +19,8 @@
 int main() {
     std::cout << "Idle Breakout Editor Copyright (C) 2026 Jorttle\n"
     "This program comes with ABSOLUTELY NO WARRANTY\n"
-    "This is free software, and you are welcome to redistribute it under certain conditions. See https://www.gnu.org/licenses for more information.\n" << std::endl;
+    "This is free software, and you are welcome to redistribute it under certain conditions. See https://www.gnu.org/licenses for more information.\n"
+    "***************************************" << std::endl;
 
     return 0;
 }
