@@ -15,6 +15,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <iostream>
+#include "IdleSave.hpp"
 
 int main() {
     std::cout << "Idle Breakout Editor Copyright (C) 2026 Jorttle\n"

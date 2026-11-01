@@ -14,12 +14,12 @@ class IdleSave {
         int blackBricksBroken;
         int powerupsRemaining;
         int totalClicks; // Unknown
-        int ballFactShowing; // What ball fact is currently showing
+        /*int ballFactShowing; // What ball fact is currently showing
         bool ballFactsOn;
         bool BonusAlerts;
-        bool effectsOn;
+        bool effectsOn; */
         int startTimestamp; // Unknown
-        int timeToReach100;
+        int timeToReach100; // Unknown
         /*int value17; // Basic.damageDone
         int value18; // Basic.damageDone
         int value19; // Plasma.damageDone
@@ -109,14 +109,14 @@ class IdleSave {
         int value103; // Skill Points (TO DO)
         int value104; // Skill Points (TO DO)*/
         int blackBrickWallet;
-        int cursorColor;
-        int backgroundColor;
+        /* int cursorColor;
+        int backgroundColor; */
         int bossNumber; // Difference between these are unknown
         int bossLevel; // Difference between these are unknown
         int skillPoints;
-        bool soundOn;
+        /* bool soundOn;
         int soundEffects; // Unknown
-        bool autoFightBoss;
+        bool autoFightBoss; */
     public:
         class Ball {
             private:
@@ -183,6 +183,32 @@ class IdleSave {
                 int getTruePower() const {return truePower;}
                 void setTruePower(int pwr);
         };
+        class SettingsGroup {
+            private:
+                enum class CursorColorEnum {
+                    Normal,
+                    Red,
+                    Green,
+                    LightBlue,
+                    Black
+                };
+                enum class BackgroundColorEnum {
+                    Normal,
+                    LightPink,
+                    LightGreen,
+                    LightBlue,
+                    LightPurple
+                };
+                int ballFactShowing; // What ball fact is currently showing
+                bool ballFactsOn;
+                bool BonusAlerts;
+                CursorColorEnum cursorColor;
+                BackgroundColorEnum backgroundColor;
+                bool effectsOn;
+                bool soundOn;
+                int soundEffects; // Unknown
+                bool autoFightBoss;
+        };
         IdleSave() {};
         StandardBall Basic = StandardBall(1, 1, 9, 1, 1, "speed");
         StandardBall Plasma = StandardBall(1, 1, 6, 3, 3, "range");
@@ -192,4 +218,5 @@ class IdleSave {
         StandardBall Poison = StandardBall(2, 5, 5, 5, 5, "speed");
         Ball Snow;
         Ball Money;
+        SettingsGroup Settings;
 };
