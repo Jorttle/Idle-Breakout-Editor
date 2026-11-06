@@ -17,11 +17,21 @@
 #include <iostream>
 #include "IdleSave.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
     std::cout << "Idle Breakout Editor Copyright (C) 2026 Jorttle\n"
     "This program comes with ABSOLUTELY NO WARRANTY\n"
     "This is free software, and you are welcome to redistribute it under certain conditions. See https://www.gnu.org/licenses for more information.\n"
     "***************************************" << std::endl;
+    if(argc > 2) {
+        std::cout << "That's too many arguments!" << std::endl;
+        return 1;
+    }
+    bool ignoreRestrictions = false;
+    if(argc > 1 && (argv[1] == "-i" || argv[1] == "--ignore-restrictions")) { ignoreRestrictions = true; }
+    else if (argc > 1) {
+        std::cout << "I don't understand those arguments. Continuing as if no arguments were passed..." << std::endl;
+    }
+    IdleSave Save = IdleSave("Temporary Export String", ignoreRestrictions);
 
     return 0;
 }

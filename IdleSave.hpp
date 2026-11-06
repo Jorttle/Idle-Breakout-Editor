@@ -1,17 +1,24 @@
 #pragma once
 #include <stdexcept>
 #include <string>
+#include <cstdint>
+#include <boost/multiprecision/cpp_int.hpp>
+using bigInt = boost::multiprecision::cpp_int;
 
 class IdleSave {
     private:
-        int level;
-        int money;
-        int gold;
-        int claimGold;
-        int timesPrestiged;
-        int bricksBrokenThisRun;
-        int bricksBrokenAllTime;
-        int blackBricksBroken;
+        /* Flag arguments */
+        bool ignoreRestrictions;
+
+        /* Idle Breakout Export Values */
+        bigInt level;
+        bigInt money;
+        bigInt gold;
+        bigInt claimGold;
+        bigInt timesPrestiged;
+        bigInt bricksBrokenThisRun;
+        bigInt bricksBrokenAllTime;
+        bigInt blackBricksBroken;
         int powerupsRemaining;
         int totalClicks; // Unknown
         /*int ballFactShowing; // What ball fact is currently showing
@@ -68,16 +75,16 @@ class IdleSave {
         bool value62; // Cannon.milDamage
         bool value63; // Poison.milDamage */
         bool allPowerupsUsed;
-        bool prestiged5Times;
+        bool prestiged5Times; 
         bool have10EachBall;
         bool break1000BlackBricks;
         bool reachLevel250;
         bool allLasersUnlocked;
-        int hasUsedDoubleMoney;
-        int hasUsedClickFrenzy;
-        int hasUsedDemonCore;
-        int hasUsedSnowBall;
-        int hasUsedDoubleGold;
+        bool hasUsedDoubleMoney;
+        bool hasUsedClickFrenzy;
+        bool hasUsedDemonCore;
+        bool hasUsedSnowBall;
+        bool hasUsedDoubleGold;
         /*int value75; // Skill Points (TO DO)
         int value76; // Skill Points (TO DO)
         int value77; // Skill Points (TO DO)
@@ -117,17 +124,21 @@ class IdleSave {
         /* bool soundOn;
         int soundEffects; // Unknown
         bool autoFightBoss; */
+        
+        std::string buildImport(); // Exports un-encoded string
+        std::string returnWarnings(); // Returns warnings for things that don't make sense (e.g. all powerups are used but "Used all powerups" Achievement is false)
+
     public:
         class Ball {
             private:
                 int amount = 0;
+            protected:
+                /* Reference to parent class */
+                IdleSave& parent;
             public:
-                Ball() {};
+                Ball(IdleSave& parent) : parent(parent) {}
                 int getAmount() {return amount;}
-                void setAmount(int amnt) {
-                    if(amnt < 0) {throw std::invalid_argument("Amount must be at least 0");}
-                    amount = amnt;
-                }
+                void setAmount(int amnt);
         };
         class StandardBall : public Ball {
             private:
@@ -139,27 +150,23 @@ class IdleSave {
                 bool milDamage = false;
                 // The speed and power that go into the export string aren't the true speed and power, so we need variables for each.
                 // trueSpeed = (speedMult * speed) + speedAdd
-                const int speedMult;
-                const int speedAdd;
+                const std::uint8_t speedMult;
+                const std::uint8_t speedAdd;
                 int trueSpeed;
-                const int maxSpeedUpgrades;
+                const std::uint8_t maxSpeedUpgrades;
                 // Similar with power except you can keep upgrading power indefinitly.
-                const int powerMult;
-                const int powerAdd;
+                const std::uint8_t powerMult;
+                const std::uint8_t powerAdd;
                 int truePower;
                 const std::string statOneName;
             public:
-                // NEVER USE THE DEFAULT CONSTRUCTOR
-                StandardBall() :
-                    speedMult(0),
-                    speedAdd(0),
-                    maxSpeedUpgrades(0),
-                    trueSpeed(0),
-                    powerMult(0),
-                    powerAdd(0),
-                    truePower(0),
-                    statOneName("speed") {}
-                StandardBall(int speedMult, int speedAdd, int maxSpeedUpgrades, int powerMult, int powerAdd, std::string statOneName) :
+                StandardBall(
+                    std::uint8_t speedMult,
+                    std::uint8_t speedAdd,
+                    std::uint8_t maxSpeedUpgrades,
+                    std::uint8_t powerMult,
+                    std::uint8_t powerAdd,
+                    std::string statOneName) :
                     speedMult(speedMult),
                     speedAdd(speedAdd),
                     maxSpeedUpgrades(maxSpeedUpgrades),
@@ -167,7 +174,8 @@ class IdleSave {
                     powerMult(powerMult),
                     powerAdd(powerAdd),
                     truePower(powerAdd),
-                    statOneName(statOneName) {}
+                    statOneName(statOneName),
+                    Ball(parent) {}
                 // Getters and Setters
                 int getDamageDone() const {return damageDone;}
                 void setDamageDone(int dmg);
@@ -185,6 +193,8 @@ class IdleSave {
         };
         class SettingsGroup {
             private:
+                /* Reference to parent class */
+                IdleSave& parent;
                 enum class CursorColorEnum {
                     Normal,
                     Red,
@@ -208,15 +218,17 @@ class IdleSave {
                 bool soundOn;
                 int soundEffects; // Unknown
                 bool autoFightBoss;
+            public:
+                SettingsGroup(IdleSave& parent) : parent(parent) {}
         };
-        IdleSave() {};
-        StandardBall Basic = StandardBall(1, 1, 9, 1, 1, "speed");
-        StandardBall Plasma = StandardBall(1, 1, 6, 3, 3, "range");
-        StandardBall Sniper = StandardBall(1, 4, 6, 5, 5, "speed");
-        StandardBall Scatter = StandardBall(1, 2, 8, 10, 10, "extra balls");
-        StandardBall Cannon = StandardBall(2, 4, 6, 25, 50, "speed");
-        StandardBall Poison = StandardBall(2, 5, 5, 5, 5, "speed");
-        Ball Snow;
-        Ball Money;
-        SettingsGroup Settings;
+        IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {}
+        StandardBall BasicBall = StandardBall(1, 1, 9, 1, 1, "speed");
+        StandardBall PlasmaBall = StandardBall(1, 1, 6, 3, 3, "range");
+        StandardBall SniperBall = StandardBall(1, 4, 6, 5, 5, "speed");
+        StandardBall ScatterBall = StandardBall(1, 2, 8, 10, 10, "extra balls");
+        StandardBall CannonBall = StandardBall(2, 4, 6, 25, 50, "speed");
+        StandardBall PoisonBall = StandardBall(2, 5, 5, 5, 5, "speed");
+        Ball SnowBall = Ball(*this);
+        Ball MoneyBall = Ball(*this);
+        SettingsGroup Settings = SettingsGroup(*this);
 };
