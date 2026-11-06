@@ -72,3 +72,12 @@ void IdleSave::StandardBall::setTruePower(int pwr) {
     truePower = pwr;
     power = (pwr - powerAdd) / powerMult;
 }
+void IdleSave::SettingsGroup::setBallFactShowing(int fact) {
+    /* Check for ignoreRestrictions flag */
+    if(parent.ignoreRestrictions) {ballFactShowing = fact;}
+    if(fact < 0) {throw std::invalid_argument("Fact must be greater or equal to 0");}
+    if(fact > 1000 /* TO DO: Figure out how many ball facts there actually are, 1000 is a placeholder */) {
+        throw std::invalid_argument("Fact must be less than or equal to 1000 (1000 is a placeholder value)");
+    }
+    ballFactShowing = fact;
+}

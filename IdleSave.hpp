@@ -23,7 +23,7 @@ class IdleSave {
         int totalClicks; // Unknown
         /*int ballFactShowing; // What ball fact is currently showing
         bool ballFactsOn;
-        bool BonusAlerts;
+        bool bonusAlert;
         bool effectsOn; */
         int startTimestamp; // Unknown
         int timeToReach100; // Unknown
@@ -192,9 +192,8 @@ class IdleSave {
                 void setTruePower(int pwr);
         };
         class SettingsGroup {
-            private:
-                /* Reference to parent class */
-                IdleSave& parent;
+            public: /* Must define these enums as public before the private enum variables can be declared */
+                /* Enum Classes for background color and cursor color*/
                 enum class CursorColorEnum {
                     Normal,
                     Red,
@@ -209,17 +208,38 @@ class IdleSave {
                     LightBlue,
                     LightPurple
                 };
+            private:
+                /* Reference to parent class */
+                IdleSave& parent;
                 int ballFactShowing; // What ball fact is currently showing
                 bool ballFactsOn;
-                bool BonusAlerts;
+                bool bonusAlert;
                 CursorColorEnum cursorColor;
                 BackgroundColorEnum backgroundColor;
                 bool effectsOn;
                 bool soundOn;
-                int soundEffects; // Unknown
+                // int soundEffects; // Unknown
                 bool autoFightBoss;
             public:
                 SettingsGroup(IdleSave& parent) : parent(parent) {}
+                // Getters and Setters
+                int getBallFactShowing() {return ballFactShowing;}
+                void setBallFactShowing(int fact);
+                bool getBallFactsOn() {return ballFactsOn;}
+                void setBallFactsOn(bool factOn) {ballFactsOn = factOn;}
+                bool getBonusAlert() {return bonusAlert;}
+                void setBonusAlert(bool alertOn) {bonusAlert = alertOn;}
+                CursorColorEnum getCursorColor() {return cursorColor;}
+                void setCursorColor(CursorColorEnum color);
+                bool getEffectsOn() {return effectsOn;}
+                void setEffectsOn(bool effOn) {effectsOn = effOn;}
+                bool getSoundOn() {return soundOn;}
+                void setSoundOn(bool sndOn) {soundOn = sndOn;}
+                // int getSoundEffects() {return effectsOn;} /* Unknown Value */
+                // void setSoundEffects(int sndEff) {soundEffects = sndEff;} /* Unknown Value */
+                bool getAutoFightBoss() {return autoFightBoss;}
+                void setAutoFightBoss(bool autoOn) {autoFightBoss = autoOn;}
+                                                
         };
         IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {}
         StandardBall BasicBall = StandardBall(1, 1, 9, 1, 1, "speed");
