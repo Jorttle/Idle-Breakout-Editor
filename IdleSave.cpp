@@ -86,7 +86,7 @@ void IdleSave::SettingsGroup::setBallFactShowing(int fact) {
 }
 
 /* setSkillAtPos() is private */
-void IdleSave::Skills::setSkillAtPos(int col, int row, bool boolVal) {
+void IdleSave::SkillsClass::setSkillAtPos(int col, int row, bool boolVal) {
     /* These two if statements run regardless of parent.ignoreRestrictions because we don't want to write to outside the array. */
     if(col < 0 || col > 5) {throw std::out_of_range("That column doesn't exist! (Must between 0 and 5)");}
     if(row < 0 || row > 4) {throw std::out_of_range("That row doesn't exist! (Must between 0 and 4)");}
@@ -96,8 +96,8 @@ void IdleSave::Skills::setSkillAtPos(int col, int row, bool boolVal) {
     }
     skillArray[col][row] = boolVal;
 }
-void IdleSave::Skills::setColFalse(int col) {
-    /* I copied and pasted (and slightly modified) the next 2 lines from IdleSave::Skills::setSkillAtPos() */
+void IdleSave::SkillsClass::setColFalse(int col) {
+    /* I copied and pasted (and slightly modified) the next 2 lines from IdleSave::SkillsClass::setSkillAtPos() */
     /* This if statement runs regardless of parent.ignoreRestrictions because we don't want to write to outside the array. */
     if(col < 0 || col > 5) {throw std::out_of_range("That column doesn't exist! (Must between 0 and 5)");}
     int startValue;
@@ -107,7 +107,7 @@ void IdleSave::Skills::setColFalse(int col) {
         setSkillAtPos(col, i, false);
     }
 }
-void IdleSave::Skills::setPosTrueRestricted(int col, int row) {
+void IdleSave::SkillsClass::setPosTrueRestricted(int col, int row) {
     /* This function is "Restricted" in the sense that it sets every value up to and including [col][row] to true. It clears the row to false before setting true.
     This function will try to set the value at [col][row] to true, then each value before it: [col][row-1], [col][row-2], etc. finishing at row == 0
     It lets setSkillAtPos() throw the exceptions */
@@ -116,7 +116,7 @@ void IdleSave::Skills::setPosTrueRestricted(int col, int row) {
         setSkillAtPos(col, irow, true);
     }
 }
-void IdleSave::Skills::setPosUnrestricted(int col, int row, bool boolVal) {
+void IdleSave::SkillsClass::setPosUnrestricted(int col, int row, bool boolVal) {
     /* If restrictions are ignored then it will allow setSkillAtPos() to be called, allowing them to change any value in the array. */
     if(!parent.ignoreRestrictions) {
         throw std::logic_error("This error shouldn't be printing. setPosUnrestricted() should only be called if parent.ignoreRestrictions is true.");

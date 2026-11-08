@@ -241,7 +241,7 @@ class IdleSave {
                 void setAutoFightBoss(bool autoOn) {autoFightBoss = autoOn;}
                                                 
         };
-        class Skills {
+        class SkillsClass {
             private:
                 /* Reference to parent */
                 IdleSave& parent;
@@ -255,7 +255,7 @@ class IdleSave {
                 };
                 void setSkillAtPos(int col, int row, bool boolVal);
             public:
-                Skills(IdleSave& parent) : parent(parent) {}
+                SkillsClass(IdleSave& parent) : parent(parent) {}
                 void setColFalse(int col);
                 void setPosTrueRestricted(int col, int row);
                 void setPosUnrestricted(int col, int row, bool boolVal);
@@ -270,4 +270,5 @@ class IdleSave {
         Ball SnowBall = Ball(*this);
         Ball MoneyBall = Ball(*this);
         SettingsGroup Settings = SettingsGroup(*this);
+        SkillsClass Skills = SkillsClass(*this);
 };
