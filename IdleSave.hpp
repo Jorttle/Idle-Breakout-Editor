@@ -16,7 +16,7 @@ class IdleSave {
         bigInt money;
         bigInt gold;
         bigInt claimGold;
-        bigInt timesPrestiged;
+        /* int timesPrestiged; */
         bigInt bricksBrokenThisRun;
         bigInt bricksBrokenAllTime;
         bigInt blackBricksBroken;
@@ -64,11 +64,11 @@ class IdleSave {
         int laserFireRate; // Unknown if used
         int laserPower;
         int clickPower;
-        int levelCashBonus;
+        /* int levelCashBonus;
         int ballSpeedIncrease;
         int ballPowerMultiplier;
         int laserAmount;
-        int maxBallAmount;
+        int maxBallAmount; */
         /*bool value58; // Basic.milDamage
         bool value59; // Plasma.milDamage
         bool value60; // Sniper.milDamage
@@ -76,7 +76,7 @@ class IdleSave {
         bool value62; // Cannon.milDamage
         bool value63; // Poison.milDamage */
         /* bool allPowerupsUsed; // Powerups */
-        bool prestiged5Times; 
+        /* bool prestiged5Times;  */
         bool have10EachBall;
         bool break1000BlackBricks;
         bool reachLevel250;
@@ -138,7 +138,7 @@ class IdleSave {
                 IdleSave& parent;
             public:
                 Ball(IdleSave& parent) : parent(parent) {}
-                int getAmount() {return amount;}
+                int getAmount() const {return amount;}
                 void setAmount(int amnt);
         };
         class StandardBall : public Ball {
@@ -192,7 +192,7 @@ class IdleSave {
                 int getTruePower() const {return truePower;}
                 void setTruePower(int pwr);
         };
-        class SettingsGroup {
+        class SettingsClass {
             public: /* Must define these enums as public before the private enum variables can be declared */
                 /* Enum Classes for background color and cursor color*/
                 enum class CursorColorEnum {
@@ -222,23 +222,23 @@ class IdleSave {
                 // int soundEffects; // Unknown
                 bool autoFightBoss;
             public:
-                SettingsGroup(IdleSave& parent) : parent(parent) {}
+                SettingsClass(IdleSave& parent) : parent(parent) {}
                 // Getters and Setters
-                int getBallFactShowing() {return ballFactShowing;}
+                int getBallFactShowing() const {return ballFactShowing;}
                 void setBallFactShowing(int fact);
-                bool getBallFactsOn() {return ballFactsOn;}
+                bool getBallFactsOn() const {return ballFactsOn;}
                 void setBallFactsOn(bool factOn) {ballFactsOn = factOn;}
-                bool getBonusAlert() {return bonusAlert;}
+                bool getBonusAlert() const {return bonusAlert;}
                 void setBonusAlert(bool alertOn) {bonusAlert = alertOn;}
                 CursorColorEnum getCursorColor() {return cursorColor;}
                 void setCursorColor(CursorColorEnum color);
-                bool getEffectsOn() {return effectsOn;}
+                bool getEffectsOn() const {return effectsOn;}
                 void setEffectsOn(bool effOn) {effectsOn = effOn;}
-                bool getSoundOn() {return soundOn;}
+                bool getSoundOn() const {return soundOn;}
                 void setSoundOn(bool sndOn) {soundOn = sndOn;}
                 // int getSoundEffects() {return effectsOn;} /* Unknown Value */
                 // void setSoundEffects(int sndEff) {soundEffects = sndEff;} /* Unknown Value */
-                bool getAutoFightBoss() {return autoFightBoss;}
+                bool getAutoFightBoss() const {return autoFightBoss;}
                 void setAutoFightBoss(bool autoOn) {autoFightBoss = autoOn;}
                                                 
         };
@@ -262,7 +262,7 @@ class IdleSave {
                 void setPosTrueRestricted(int col, int row);
                 void setPosUnrestricted(int col, int row, bool boolVal);
                 int getPos(int col, int row);
-                std::array<std::array<int, 5>, 6> getFullArray() {return skillArray;}
+                std::array<std::array<int, 5>, 6> getFullArray() const {return skillArray;}
 
         };
         class PowerupsClass {
@@ -278,8 +278,23 @@ class IdleSave {
                 bool hasUsedDemonCore;
                 bool hasUsedSnowBall;
                 bool hasUsedDoubleGold;
-                int getPowerupsRemaining() {return powerupsRemaining;}
+                int getPowerupsRemaining() const {return powerupsRemaining;}
                 void setPowerupsRemaining(int pwrUp);
+        };
+        class PrestigeClass {
+            private:
+                IdleSave& parent;
+
+                int levelCashBonus;
+                int ballSpeedIncrease;
+                int ballPowerMultiplier;
+                int laserAmount;
+                int maxBallAmount;
+
+                int timesPrestiged;
+                bool prestiged5Times; 
+            public:
+                PrestigeClass(IdleSave& parent) : parent(parent) {}
         };
         IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {}
         StandardBall BasicBall = StandardBall(1, 1, 9, 1, 1, "speed");
@@ -290,7 +305,7 @@ class IdleSave {
         StandardBall PoisonBall = StandardBall(2, 5, 5, 5, 5, "speed");
         Ball SnowBall = Ball(*this);
         Ball MoneyBall = Ball(*this);
-        SettingsGroup Settings = SettingsGroup(*this);
+        SettingsClass Settings = SettingsClass(*this);
         SkillsClass Skills = SkillsClass(*this);
         PowerupsClass Powerups = PowerupsClass(*this);
 };

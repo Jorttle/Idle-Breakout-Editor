@@ -75,7 +75,7 @@ void IdleSave::StandardBall::setTruePower(int pwr) {
     power = (pwr - powerAdd) / powerMult;
 }
 
-void IdleSave::SettingsGroup::setBallFactShowing(int fact) {
+void IdleSave::SettingsClass::setBallFactShowing(int fact) {
     /* Check for ignoreRestrictions flag */
     if(parent.ignoreRestrictions) {ballFactShowing = fact;}
     if(fact < 0) {throw std::invalid_argument("Fact must be greater or equal to 0");}
