@@ -13,13 +13,15 @@ std::string firstCharUp(std::string str) {
 // TO DO: these functions
 std::string IdleSave::buildImport() {return "";}
 std::string IdleSave::returnWarnings() {return "";}
-// Public
+/* These functions in public classes (Though the function may not be public. All private functions have a comment above the function definition.)
+   These functions currently throw std::invalid_argument and std::out_of_range which can both be caught by catching std::logic_error */
 void IdleSave::Ball::setAmount(int amnt) {
     /* Check for ignoreRestrictions flag */
     if(parent.ignoreRestrictions) {amount = amnt; return;}
     if(amnt < 0) {throw std::invalid_argument("Amount must be at least 0");}
     amount = amnt;
 }
+
 void IdleSave::StandardBall::setDamageDone(int dmg) {
     /* Check for ignoreRestrictions flag */
     if(parent.ignoreRestrictions) {damageDone = dmg; return;}
@@ -72,6 +74,7 @@ void IdleSave::StandardBall::setTruePower(int pwr) {
     truePower = pwr;
     power = (pwr - powerAdd) / powerMult;
 }
+
 void IdleSave::SettingsGroup::setBallFactShowing(int fact) {
     /* Check for ignoreRestrictions flag */
     if(parent.ignoreRestrictions) {ballFactShowing = fact;}
@@ -80,4 +83,43 @@ void IdleSave::SettingsGroup::setBallFactShowing(int fact) {
         throw std::invalid_argument("Fact must be less than or equal to 1000 (1000 is a placeholder value)");
     }
     ballFactShowing = fact;
+}
+
+/* setSkillAtPos() is private */
+void IdleSave::Skills::setSkillAtPos(int col, int row, bool boolVal) {
+    /* These two if statements run regardless of parent.ignoreRestrictions because we don't want to write to outside the array. */
+    if(col < 0 || col > 5) {throw std::out_of_range("That column doesn't exist! (Must between 0 and 5)");}
+    if(row < 0 || row > 4) {throw std::out_of_range("That row doesn't exist! (Must between 0 and 4)");}
+    if(!parent.ignoreRestrictions && row == 4) {throw std::invalid_argument("You can't write to this row. Pass --ignore-restrictions to write to this row.");}
+    if(!parent.ignoreRestrictions && col == 2 && row == 0 && !boolVal) {
+        throw std::invalid_argument("You can't set the first sniper ball value to false. Pass --ignore-restrictions to do so.");
+    }
+    skillArray[col][row] = boolVal;
+}
+void IdleSave::Skills::setColFalse(int col) {
+    /* I copied and pasted (and slightly modified) the next 2 lines from IdleSave::Skills::setSkillAtPos() */
+    /* This if statement runs regardless of parent.ignoreRestrictions because we don't want to write to outside the array. */
+    if(col < 0 || col > 5) {throw std::out_of_range("That column doesn't exist! (Must between 0 and 5)");}
+    int startValue;
+    if(!parent.ignoreRestrictions && col == 2) {startValue = 1;} /* This ensures the first value in the Sniper Ball row isn't set to false when restrictions are enforced.*/
+    else {startValue = 0;}
+    for(int i = startValue; i < 5; ++i) {
+        setSkillAtPos(col, i, false);
+    }
+}
+void IdleSave::Skills::setPosTrueRestricted(int col, int row) {
+    /* This function is "Restricted" in the sense that it sets every value up to and including [col][row] to true. It clears the row to false before setting true.
+    This function will try to set the value at [col][row] to true, then each value before it: [col][row-1], [col][row-2], etc. finishing at row == 0
+    It lets setSkillAtPos() throw the exceptions */
+    setColFalse(col);
+    for(int irow = row; irow >= 0; --irow) {
+        setSkillAtPos(col, irow, true);
+    }
+}
+void IdleSave::Skills::setPosUnrestricted(int col, int row, bool boolVal) {
+    /* If restrictions are ignored then it will allow setSkillAtPos() to be called, allowing them to change any value in the array. */
+    if(!parent.ignoreRestrictions) {
+        throw std::logic_error("This error shouldn't be printing. setPosUnrestricted() should only be called if parent.ignoreRestrictions is true.");
+    }
+    setSkillAtPos(col, row, boolVal);
 }

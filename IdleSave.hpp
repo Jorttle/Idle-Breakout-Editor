@@ -85,36 +85,36 @@ class IdleSave {
         bool hasUsedDemonCore;
         bool hasUsedSnowBall;
         bool hasUsedDoubleGold;
-        /*int value75; // Skill Points (TO DO)
-        int value76; // Skill Points (TO DO)
-        int value77; // Skill Points (TO DO)
-        int value78; // Skill Points (TO DO)
-        int value79; // Skill Points (TO DO)
-        int value80; // Skill Points (TO DO)
-        int value81; // Skill Points (TO DO)
-        int value82; // Skill Points (TO DO)
-        int value83; // Skill Points (TO DO)
-        int value84; // Skill Points (TO DO)
-        int value85; // Skill Points (TO DO)
-        int value86; // Skill Points (TO DO)
-        int value87; // Skill Points (TO DO)
-        int value88; // Skill Points (TO DO)
-        int value89; // Skill Points (TO DO)
-        int value90; // Skill Points (TO DO)
-        int value91; // Skill Points (TO DO)
-        int value92; // Skill Points (TO DO)
-        int value93; // Skill Points (TO DO)
-        int value94; // Skill Points (TO DO)
-        int value95; // Skill Points (TO DO)
-        int value96; // Skill Points (TO DO)
-        int value97; // Skill Points (TO DO)
-        int value98; // Skill Points (TO DO)
-        int value99; // Skill Points (TO DO)
-        int value100; // Skill Points (TO DO)
-        int value101; // Skill Points (TO DO)
-        int value102; // Skill Points (TO DO)
-        int value103; // Skill Points (TO DO)
-        int value104; // Skill Points (TO DO)*/
+        /*int value75; // Skill Points
+        int value76; // Skill Points
+        int value77; // Skill Points
+        int value78; // Skill Points
+        int value79; // Skill Points
+        int value80; // Skill Points
+        int value81; // Skill Points
+        int value82; // Skill Points
+        int value83; // Skill Points
+        int value84; // Skill Points
+        int value85; // Skill Points
+        int value86; // Skill Points
+        int value87; // Skill Points
+        int value88; // Skill Points
+        int value89; // Skill Points
+        int value90; // Skill Points
+        int value91; // Skill Points
+        int value92; // Skill Points
+        int value93; // Skill Points
+        int value94; // Skill Points
+        int value95; // Skill Points
+        int value96; // Skill Points
+        int value97; // Skill Points
+        int value98; // Skill Points
+        int value99; // Skill Points
+        int value100; // Skill Points
+        int value101; // Skill Points
+        int value102; // Skill Points
+        int value103; // Skill Points
+        int value104; // Skill Points */
         int blackBrickWallet;
         /* int cursorColor;
         int backgroundColor; */
@@ -240,6 +240,25 @@ class IdleSave {
                 bool getAutoFightBoss() {return autoFightBoss;}
                 void setAutoFightBoss(bool autoOn) {autoFightBoss = autoOn;}
                                                 
+        };
+        class Skills {
+            private:
+                /* Reference to parent */
+                IdleSave& parent;
+                bool skillArray[6][5] = {
+                    {false, false, false, false, false}, /* Column 0 */ /* Yes, they are secretly rows, but they are columns in-game */
+                    {false, false, false, false, false}, /* Column 1 */
+                    {true, false, false, false, false}, /* Column 2 - Only column that has the first value defaulted as true */
+                    {false, false, false, false, false}, /* Column 3 */
+                    {false, false, false, false, false}, /* Column 4 */
+                    {false, false, false, false, false} /* Column 5 */
+                };
+                void setSkillAtPos(int col, int row, bool boolVal);
+            public:
+                Skills(IdleSave& parent) : parent(parent) {}
+                void setColFalse(int col);
+                void setPosTrueRestricted(int col, int row);
+                void setPosUnrestricted(int col, int row, bool boolVal);
         };
         IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {}
         StandardBall BasicBall = StandardBall(1, 1, 9, 1, 1, "speed");
