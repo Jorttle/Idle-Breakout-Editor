@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <stdexcept>
 #include <string>
 #include <cstdint>
@@ -19,7 +20,7 @@ class IdleSave {
         bigInt bricksBrokenThisRun;
         bigInt bricksBrokenAllTime;
         bigInt blackBricksBroken;
-        int powerupsRemaining;
+        /* int powerupsRemaining; */
         int totalClicks; // Unknown
         /*int ballFactShowing; // What ball fact is currently showing
         bool ballFactsOn;
@@ -74,17 +75,17 @@ class IdleSave {
         bool value61; // Scatter.milDamage
         bool value62; // Cannon.milDamage
         bool value63; // Poison.milDamage */
-        bool allPowerupsUsed;
+        /* bool allPowerupsUsed; // Powerups */
         bool prestiged5Times; 
         bool have10EachBall;
         bool break1000BlackBricks;
         bool reachLevel250;
         bool allLasersUnlocked;
-        bool hasUsedDoubleMoney;
-        bool hasUsedClickFrenzy;
-        bool hasUsedDemonCore;
-        bool hasUsedSnowBall;
-        bool hasUsedDoubleGold;
+        /* bool hasUsedDoubleMoney; // Powerups
+        bool hasUsedClickFrenzy; // Powerups
+        bool hasUsedDemonCore; // Powerups
+        bool hasUsedSnowBall; // Powerups
+        bool hasUsedDoubleGold; // Powerups */
         /*int value75; // Skill Points
         int value76; // Skill Points
         int value77; // Skill Points
@@ -245,20 +246,40 @@ class IdleSave {
             private:
                 /* Reference to parent */
                 IdleSave& parent;
-                bool skillArray[6][5] = {
+                std::array<std::array<int, 5>, 6> skillArray = {{
                     {false, false, false, false, false}, /* Column 0 */ /* Yes, they are secretly rows, but they are columns in-game */
                     {false, false, false, false, false}, /* Column 1 */
                     {true, false, false, false, false}, /* Column 2 - Only column that has the first value defaulted as true */
                     {false, false, false, false, false}, /* Column 3 */
                     {false, false, false, false, false}, /* Column 4 */
                     {false, false, false, false, false} /* Column 5 */
-                };
+                }};
+                void throwIfOutOfRange(int col, int row);
                 void setSkillAtPos(int col, int row, bool boolVal);
             public:
                 SkillsClass(IdleSave& parent) : parent(parent) {}
                 void setColFalse(int col);
                 void setPosTrueRestricted(int col, int row);
                 void setPosUnrestricted(int col, int row, bool boolVal);
+                int getPos(int col, int row);
+                std::array<std::array<int, 5>, 6> getFullArray() {return skillArray;}
+
+        };
+        class PowerupsClass {
+            private:
+                IdleSave& parent;
+                int powerupsRemaining; /* Should be between 0 and 5 */
+            public:
+                PowerupsClass(IdleSave& parent) : parent(parent) {}
+                bool allPowerupsUsed;
+
+                bool hasUsedDoubleMoney;
+                bool hasUsedClickFrenzy;
+                bool hasUsedDemonCore;
+                bool hasUsedSnowBall;
+                bool hasUsedDoubleGold;
+                int getPowerupsRemaining() {return powerupsRemaining;}
+                void setPowerupsRemaining(int pwrUp);
         };
         IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {}
         StandardBall BasicBall = StandardBall(1, 1, 9, 1, 1, "speed");
@@ -271,4 +292,5 @@ class IdleSave {
         Ball MoneyBall = Ball(*this);
         SettingsGroup Settings = SettingsGroup(*this);
         SkillsClass Skills = SkillsClass(*this);
+        PowerupsClass Powerups = PowerupsClass(*this);
 };

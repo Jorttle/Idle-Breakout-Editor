@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
     "This program comes with ABSOLUTELY NO WARRANTY\n"
     "This is free software, and you are welcome to redistribute it under certain conditions. See https://www.gnu.org/licenses for more information.\n"
     "***************************************" << std::endl;
+    /* Deal with arguments passed into main */
     if(argc > 2) {
         std::cout << "That's too many arguments!" << std::endl;
         return 1;

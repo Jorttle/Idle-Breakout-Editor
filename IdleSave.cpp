@@ -85,19 +85,23 @@ void IdleSave::SettingsGroup::setBallFactShowing(int fact) {
     ballFactShowing = fact;
 }
 
-/* setSkillAtPos() is private */
-void IdleSave::SkillsClass::setSkillAtPos(int col, int row, bool boolVal) {
-    /* These two if statements run regardless of parent.ignoreRestrictions because we don't want to write to outside the array. */
+/* throwIfOutOfRange() throws an error if the col or row is out of bounds OR if they are trying to access the fifth row without -i (the fifth row is unused in the real game) */
+void IdleSave::SkillsClass::throwIfOutOfRange(int col, int row) {
+    /* These two if statements run regardless of parent.ignoreRestrictions because we don't want to access outside the array. */
     if(col < 0 || col > 5) {throw std::out_of_range("That column doesn't exist! (Must between 0 and 5)");}
     if(row < 0 || row > 4) {throw std::out_of_range("That row doesn't exist! (Must between 0 and 4)");}
-    if(!parent.ignoreRestrictions && row == 4) {throw std::invalid_argument("You can't write to this row. Pass --ignore-restrictions to write to this row.");}
+    if(!parent.ignoreRestrictions && row == 4) {throw std::invalid_argument("You aren't allowed to access row. Pass --ignore-restrictions to write to this row.");}
+}
+/* setSkillAtPos() is private */
+void IdleSave::SkillsClass::setSkillAtPos(int col, int row, bool boolVal) {
+    throwIfOutOfRange(col, row);
     if(!parent.ignoreRestrictions && col == 2 && row == 0 && !boolVal) {
         throw std::invalid_argument("You can't set the first sniper ball value to false. Pass --ignore-restrictions to do so.");
     }
     skillArray[col][row] = boolVal;
 }
 void IdleSave::SkillsClass::setColFalse(int col) {
-    /* I copied and pasted (and slightly modified) the next 2 lines from IdleSave::SkillsClass::setSkillAtPos() */
+    /* I copied and pasted (and slightly modified) the next 2 lines from IdleSave::SkillsClass::throwIfOutOfRange() */
     /* This if statement runs regardless of parent.ignoreRestrictions because we don't want to write to outside the array. */
     if(col < 0 || col > 5) {throw std::out_of_range("That column doesn't exist! (Must between 0 and 5)");}
     int startValue;
@@ -122,4 +126,15 @@ void IdleSave::SkillsClass::setPosUnrestricted(int col, int row, bool boolVal) {
         throw std::logic_error("This error shouldn't be printing. setPosUnrestricted() should only be called if parent.ignoreRestrictions is true.");
     }
     setSkillAtPos(col, row, boolVal);
+}
+int IdleSave::SkillsClass::getPos(int col, int row) {
+    throwIfOutOfRange(col, row);
+    return skillArray[col][row];
+}
+
+void IdleSave::PowerupsClass::setPowerupsRemaining(int pwrUp) {
+    if(!parent.ignoreRestrictions && (pwrUp > 5 || pwrUp < 0)) {
+        throw std::invalid_argument("PowerupsRemaining must be between 0 and 5 (inclusive). Try passing --ignore-instructions.");
+    }
+    powerupsRemaining = pwrUp;
 }
