@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     bool ignoreRestrictions = false;
-    if(argc > 1 && (argv[1] == "-i" || argv[1] == "--ignore-restrictions")) { ignoreRestrictions = true; }
+    if(argc > 1 && (std::string(argv[1]) == "-i" || std::string(argv[1]) == "--ignore-restrictions")) { ignoreRestrictions = true; }
     else if (argc > 1) {
         std::cout << "I don't understand those arguments. Continuing as if no arguments were passed..." << std::endl;
     }

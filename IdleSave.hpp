@@ -160,14 +160,7 @@ class IdleSave {
                 const std::uint8_t powerAdd;
                 int truePower;
                 const std::string statOneName;
-            public:
-                StandardBall(
-                    std::uint8_t speedMult,
-                    std::uint8_t speedAdd,
-                    std::uint8_t maxSpeedUpgrades,
-                    std::uint8_t powerMult,
-                    std::uint8_t powerAdd,
-                    std::string statOneName) :
+                /* Ball(parent),
                     speedMult(speedMult),
                     speedAdd(speedAdd),
                     maxSpeedUpgrades(maxSpeedUpgrades),
@@ -175,8 +168,25 @@ class IdleSave {
                     powerMult(powerMult),
                     powerAdd(powerAdd),
                     truePower(powerAdd),
-                    statOneName(statOneName),
-                    Ball(parent) {}
+                    statOneName(statOneName) */
+            public:
+                StandardBall(
+                    IdleSave& parent,
+                    std::uint8_t speedMult,
+                    std::uint8_t speedAdd,
+                    std::uint8_t maxSpeedUpgrades,
+                    std::uint8_t powerMult,
+                    std::uint8_t powerAdd,
+                    std::string statOneName) :
+                    Ball(parent),
+                    speedMult(speedMult),
+                    speedAdd(speedAdd),
+                    trueSpeed(speedAdd),
+                    maxSpeedUpgrades(maxSpeedUpgrades),
+                    powerMult(powerMult),
+                    powerAdd(powerAdd),
+                    truePower(powerAdd),
+                    statOneName(statOneName) {}
                 // Getters and Setters
                 int getDamageDone() const {return damageDone;}
                 void setDamageDone(int dmg);
@@ -213,33 +223,22 @@ class IdleSave {
                 /* Reference to parent class */
                 IdleSave& parent;
                 int ballFactShowing; // What ball fact is currently showing
-                bool ballFactsOn;
-                bool bonusAlert;
                 CursorColorEnum cursorColor;
                 BackgroundColorEnum backgroundColor;
-                bool effectsOn;
-                bool soundOn;
-                // int soundEffects; // Unknown
-                bool autoFightBoss;
             public:
                 SettingsClass(IdleSave& parent) : parent(parent) {}
                 // Getters and Setters
                 int getBallFactShowing() const {return ballFactShowing;}
                 void setBallFactShowing(int fact);
-                bool getBallFactsOn() const {return ballFactsOn;}
-                void setBallFactsOn(bool factOn) {ballFactsOn = factOn;}
-                bool getBonusAlert() const {return bonusAlert;}
-                void setBonusAlert(bool alertOn) {bonusAlert = alertOn;}
                 CursorColorEnum getCursorColor() {return cursorColor;}
                 void setCursorColor(CursorColorEnum color);
-                bool getEffectsOn() const {return effectsOn;}
-                void setEffectsOn(bool effOn) {effectsOn = effOn;}
-                bool getSoundOn() const {return soundOn;}
-                void setSoundOn(bool sndOn) {soundOn = sndOn;}
-                // int getSoundEffects() {return effectsOn;} /* Unknown Value */
-                // void setSoundEffects(int sndEff) {soundEffects = sndEff;} /* Unknown Value */
-                bool getAutoFightBoss() const {return autoFightBoss;}
-                void setAutoFightBoss(bool autoOn) {autoFightBoss = autoOn;}
+                bool ballFactsOn;
+                bool bonusAlert;
+                bool effectsOn;
+                bool soundOn;
+                // int soundEffects; // Unknown
+                bool autoFightBoss;
+                
                                                 
         };
         class SkillsClass {
@@ -290,22 +289,53 @@ class IdleSave {
                 int ballPowerMultiplier;
                 int laserAmount;
                 int maxBallAmount;
+                /* These are the "true" values that you would see in-game. For example, trueLevelCashBonus starts at 0, then goes to 50, 100, 200, 400, etc. */
+                int trueLevelCashBonus;
+                int trueBallSpeedIncrease;
+                bigInt trueBallPowerMultiplier; /* The "true" value gets very big very fast, so it needs bigInt */
+                /* trueLaserAmount would just be the same as laserAmount */
+                int trueMaxBallAmount; 
 
                 int timesPrestiged;
-                bool prestiged5Times; 
             public:
                 PrestigeClass(IdleSave& parent) : parent(parent) {}
+                bool prestiged5Times;
+                int getLevelCashBonus() const {return levelCashBonus;}
+                void setLevelCashBonus(int cash);
+                int getBallSpeedIncrease() const {return ballSpeedIncrease;}
+                void setBallSpeedIncrease(int sped);
+                int getBallPowerMultiplier() const {return ballPowerMultiplier;}
+                void setBallPowerMultiplier(int pwr);
+                int getLaserAmount() const {return laserAmount;}
+                void setLaserAmount(int lsr);
+                int getMaxBallAmount() const {return maxBallAmount;}
+                void setMaxBallAmount(int max);
+                /* True getters and setters */
+                int getTrueLevelCashBonus() const {return trueLevelCashBonus;}
+                void setTrueLevelCashBonus(int cash);
+                int getTrueBallSpeedIncrease() const {return trueBallSpeedIncrease;}
+                void setTrueBallSpeedIncrease(int sped);
+                /* One getter and setter omitted */
+                bigInt getTrueBallPowerMultiplier() const {return trueBallPowerMultiplier;}
+                void setTrueBallPowerMultiplier(bigInt pwr);
+                int getTrueMaxBallAmount() const {return trueMaxBallAmount;}
+                void setTrueMaxBallAmount(int max);
+
+                int getTimesPrestiged() const {return timesPrestiged;}
+                void setTimesPrestiged(int times);
         };
-        IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {}
-        StandardBall BasicBall = StandardBall(1, 1, 9, 1, 1, "speed");
-        StandardBall PlasmaBall = StandardBall(1, 1, 6, 3, 3, "range");
-        StandardBall SniperBall = StandardBall(1, 4, 6, 5, 5, "speed");
-        StandardBall ScatterBall = StandardBall(1, 2, 8, 10, 10, "extra balls");
-        StandardBall CannonBall = StandardBall(2, 4, 6, 25, 50, "speed");
-        StandardBall PoisonBall = StandardBall(2, 5, 5, 5, 5, "speed");
+        IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {exportCode = "This is a temporary message";}
+        IdleSave(const IdleSave&) = delete;
+        StandardBall BasicBall = StandardBall(*this, 1, 1, 9, 1, 1, "speed");
+        StandardBall PlasmaBall = StandardBall(*this, 1, 1, 6, 3, 3, "range");
+        StandardBall SniperBall = StandardBall(*this, 1, 4, 6, 5, 5, "speed");
+        StandardBall ScatterBall = StandardBall(*this, 1, 2, 8, 10, 10, "extra balls");
+        StandardBall CannonBall = StandardBall(*this, 2, 4, 6, 25, 50, "speed");
+        StandardBall PoisonBall = StandardBall(*this, 2, 5, 5, 5, 5, "speed");
         Ball SnowBall = Ball(*this);
         Ball MoneyBall = Ball(*this);
         SettingsClass Settings = SettingsClass(*this);
         SkillsClass Skills = SkillsClass(*this);
         PowerupsClass Powerups = PowerupsClass(*this);
+        PrestigeClass Prestige = PrestigeClass(*this);
 };
