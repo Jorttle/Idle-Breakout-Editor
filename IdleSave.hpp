@@ -12,14 +12,14 @@ class IdleSave {
         bool ignoreRestrictions;
 
         /* Idle Breakout Export Values */
-        bigInt level;
+        /* bigInt level;
         bigInt money;
         bigInt gold;
-        bigInt claimGold;
+        bigInt claimGold; */
         /* int timesPrestiged; */
-        bigInt bricksBrokenThisRun;
-        bigInt bricksBrokenAllTime;
-        bigInt blackBricksBroken;
+        /* bigInt bricksBrokenThisRun; Stats
+        bigInt bricksBrokenAllTime; Stats
+        bigInt blackBricksBroken; Stats */
         /* int powerupsRemaining; */
         int totalClicks; // Unknown
         /*int ballFactShowing; // What ball fact is currently showing
@@ -62,8 +62,8 @@ class IdleSave {
         int value48; // Poison.speed
         int value49; // Poison.power */
         int laserFireRate; // Unknown if used
-        int laserPower;
-        int clickPower;
+        /* int laserPower;
+        int clickPower; */
         /* int levelCashBonus;
         int ballSpeedIncrease;
         int ballPowerMultiplier;
@@ -77,10 +77,10 @@ class IdleSave {
         bool value63; // Poison.milDamage */
         /* bool allPowerupsUsed; // Powerups */
         /* bool prestiged5Times;  */
-        bool have10EachBall;
-        bool break1000BlackBricks;
-        bool reachLevel250;
-        bool allLasersUnlocked;
+        /* bool have10EachBall;  Stats
+        bool break1000BlackBricks; Stats
+        bool reachLevel250; Stats
+        bool allLasersUnlocked; Stats */
         /* bool hasUsedDoubleMoney; // Powerups
         bool hasUsedClickFrenzy; // Powerups
         bool hasUsedDemonCore; // Powerups
@@ -116,12 +116,12 @@ class IdleSave {
         int value102; // Skill Points
         int value103; // Skill Points
         int value104; // Skill Points */
-        int blackBrickWallet;
+        /* int blackBrickWallet; */
         /* int cursorColor;
         int backgroundColor; */
         int bossNumber; // Difference between these are unknown
         int bossLevel; // Difference between these are unknown
-        int skillPoints;
+        /* int skillPoints; Currency */
         /* bool soundOn;
         int soundEffects; // Unknown
         bool autoFightBoss; */
@@ -324,6 +324,73 @@ class IdleSave {
                 int getTimesPrestiged() const {return timesPrestiged;}
                 void setTimesPrestiged(int times);
         };
+        class StatsClass {
+            private:
+                IdleSave& parent;
+                bigInt bricksBrokenThisRun;
+                bigInt bricksBrokenAllTime;
+                bigInt blackBricksBroken;
+            public:
+                StatsClass(IdleSave& parent) : parent(parent) {}
+                void setBricksBrokenThisRun(bigInt bricks);
+                bigInt getBricksBrokenThisRun() {return bricksBrokenThisRun;}
+                void setBricksBrokenAllTime(bigInt bricks);
+                bigInt getBricksBrokenAllTime() {return bricksBrokenAllTime;}
+                void setBlackBricksBroken(bigInt bricks);
+                bigInt getBlackBricksBroken() {return blackBricksBroken;}
+                bool have10EachBall;
+                bool break1000BlackBricks;
+                bool reachLevel250;
+                bool allLasersUnlocked;
+        };
+        class CurrencyClass {
+            private:
+                IdleSave& parent;
+                bigInt level;
+                bigInt money;
+                bigInt gold;
+                bigInt claimGold;
+                bigInt blackBrickWallet;
+                int skillPoints;
+            public:
+                CurrencyClass(IdleSave& parent) : parent(parent) {}
+                void setLevel(bigInt lvl);
+                bigInt getLevel() {return level;}
+                void setMoney(bigInt mon);
+                bigInt getMoney() {return money;}
+                void setGold(bigInt gold);
+                bigInt getGold() {return gold;}
+                void setClaimGold(bigInt gold);
+                bigInt getClaimGold() {return gold;}
+                void setBlackBrickWallet(bigInt wal);
+                bigInt getBlackBrickWallet() {return blackBrickWallet;}
+                void setSkillPoints(int pnt);
+                int getSkillPoints() {return skillPoints;}
+        };
+        class OtherClass {
+            private:
+                IdleSave& parent;
+                int laserPower;
+                int clickPower;
+                int trueLaserPower;
+                int trueClickPower;
+            public:
+                OtherClass(IdleSave& parent) : parent(parent) {}
+                void setLaserPower(int pwr);
+                int getLaserPower() {return laserPower;}
+                void setClickPower(int pwr);
+                int getClickPower() {return clickPower;}
+                void setTrueLaserPower(int pwr);
+                int getTrueLaserPower() {return trueLaserPower;}
+                void setTrueClickPower(int pwr);
+                int getTrueClickPower() {return trueClickPower;}
+        };
+        class UnknownClass {
+            private:
+                /* Private */
+            public:
+                /* Public */
+        };
         IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {exportCode = "This is a temporary message";}
         IdleSave(const IdleSave&) = delete;
         StandardBall BasicBall = StandardBall(*this, 1, 1, 9, 1, 1, "speed");
@@ -338,4 +405,7 @@ class IdleSave {
         SkillsClass Skills = SkillsClass(*this);
         PowerupsClass Powerups = PowerupsClass(*this);
         PrestigeClass Prestige = PrestigeClass(*this);
+        StatsClass Stats = StatsClass(*this);
+        CurrencyClass Currency = CurrencyClass(*this);
+
 };

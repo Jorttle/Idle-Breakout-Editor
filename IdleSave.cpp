@@ -59,6 +59,7 @@ void IdleSave::StandardBall::setPower(int pwr) {
     power = pwr;
     truePower = (pwr * powerMult) + powerAdd;
 }
+/* TO DO: Fix these setTrue functions. Remove first if check for parent.ignoreRestrictions. */
 void IdleSave::StandardBall::setTrueSpeed(int sped) {
     /* Check for ignoreRestrictions flag */
     if(parent.ignoreRestrictions) {
@@ -252,4 +253,92 @@ void IdleSave::PrestigeClass::setTrueMaxBallAmount(int max) {
 void IdleSave::PrestigeClass::setTimesPrestiged(int times) {
     if(!parent.ignoreRestrictions && times < 0) {throw std::invalid_argument("timesPrestiged must be at least 0. Pass --ignore-restrictions to bypass.");}
     timesPrestiged = times;
+}
+
+void IdleSave::StatsClass::setBricksBrokenThisRun(bigInt bricks) {
+    if(bricks < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("bricksBrokenThisRun can't be negative. Pass --ignore-restrictions to bypass.");
+    }
+    bricksBrokenThisRun = bricks;
+}
+void IdleSave::StatsClass::setBricksBrokenAllTime(bigInt bricks) {
+    if(bricks < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("bricksBrokenAllTime can't be negative. Pass --ignore-restrictions to bypass.");
+    }
+    bricksBrokenAllTime = bricks;
+}
+void IdleSave::StatsClass::setBlackBricksBroken(bigInt bricks) {
+    if(bricks < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("blackBricksBroken can't be negative. Pass --ignore-restrictions to bypass.");
+    }
+    blackBricksBroken = bricks;
+}
+
+void IdleSave::CurrencyClass::setLevel(bigInt lvl) {
+    if(lvl < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("level can't be negative. Pass --ignore-restrictions to bypass");
+    }
+    level = lvl;
+}
+void IdleSave::CurrencyClass::setMoney(bigInt mon) {
+    if(mon < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("money can't be negative. Pass --ignore-restrictions to bypass");
+    }
+    money = mon;
+}
+void IdleSave::CurrencyClass::setGold(bigInt gld) {
+    if(gld < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("gold can't be negative. Pass --ignore-restrictions to bypass");
+    }
+    gold = gld;
+}
+void IdleSave::CurrencyClass::setClaimGold(bigInt gold) {
+    if(gold < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("claimGold can't be negative. Pass --ignore-restrictions to bypass");
+    }
+    claimGold = gold;
+}
+void IdleSave::CurrencyClass::setBlackBrickWallet(bigInt wal) {
+    if(wal < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("blackBrickWallet can't be negative. Pass --ignore-restrictions to bypass");
+    }
+    blackBrickWallet = wal;
+}
+void IdleSave::CurrencyClass::setSkillPoints(int pnt) {
+    if(pnt < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("skillPoints can't be negative. Pass --ignore-restrictions to bypass");
+    }
+    skillPoints = pnt;
+}
+
+void IdleSave::OtherClass::setLaserPower(int pwr) {
+    if(pwr < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("laserPower can't be negative. Pass --ignore-restrictions to bypass.");
+    }
+    laserPower = pwr;
+}
+void IdleSave::OtherClass::setClickPower(int pwr) {
+    if(pwr < 0 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("clickPower can't be negative. Pass --ignore-restrictions to bypass.");
+    }
+    clickPower = pwr;
+}
+void IdleSave::OtherClass::setTrueLaserPower(int pwr) {
+    if(pwr < 100 && !parent.ignoreRestrictions) {throw std::invalid_argument("trueLaserPower can't be less than 100. Pass --ignore-restrictions to bypass.");}
+    // Checks if the laserPower given is possible by the equation `trueLaserPower = (100 * power) + 100` where laserPower is an integer
+    if((pwr - 100) % 100 != 0) {
+        int lowerPower = 100 * floor((pwr - 100) / 100.0) + 100;
+        int higherPower = 100 * ceil((pwr - 100) / 100.0) + 100;
+        throw std::invalid_argument("This ball can't have trueLaserPower " + std::to_string(pwr) + ". The closest valid integers are "
+            + std::to_string(lowerPower) + " or " + std::to_string(higherPower));
+    }
+    trueLaserPower = pwr;
+    laserPower = (pwr - 100) / 100;
+}
+void IdleSave::OtherClass::setTrueClickPower(int pwr) {
+    if(pwr < 1 && !parent.ignoreRestrictions) {
+        throw std::invalid_argument("trueClickPower can't be less than 1. Pass --ignore-restrictions to bypass.");
+    }
+    trueClickPower = pwr;
+    clickPower = pwr - 1;
 }
