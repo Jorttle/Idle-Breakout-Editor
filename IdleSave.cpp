@@ -1,7 +1,13 @@
 #include "IdleSave.hpp"
+#include <boost/multiprecision/cpp_int.hpp>
+#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <string>
+#include <algorithm>
 #include <stdexcept>
 #include <cmath>
 #include <cctype>
+using bigInt = boost::multiprecision::cpp_int;
+using decimal = boost::multiprecision::cpp_dec_float_100;
 
 // Not in IdleSave.hpp
 std::string firstCharUp(std::string str) {
@@ -25,12 +31,67 @@ bigInt exponentOf2Above(const bigInt& num) { /* Returns the power of two directl
 bigInt exponentOf2Below(const bigInt& num) { /* Returns the power of two directly below num */
     return bigInt(1) << boost::multiprecision::msb(num);
 }
+int countChar(const std::string& s, const char& c) {
+    if(s.size() == 0) {return 0;}
+    int occurences = 0;
+    int size = s.size();
+    for(int i = 0; i < size; ++i) {
+        if(s.at(i) == c) {++occurences;}
+    }
+    return occurences;
+}
+int countDigits(const std::string& s) {
+    if(s.size() == 0) {return 0;}
+    int digits = 0;
+    int size = s.size();
+    for(int i = 0; i < size; ++i) {
+        char c = s.at(i);
+        if(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {++digits;}
+    }
+    return digits;
+}
+void removeNonDigits(std::string& s) {
+    if(s.size() == 0) {return;}
+    int size = s.size();
+    for(int i = 0; i < size; ++i) {
+        char c = s.at(i);
+        if(!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9')) {
+            s.erase(i, 1);
+        }
+    }
+}
+bigInt sciToBigInt(std::string sci) { /* Takes in a scientific number as input eg. "4.52e+6" and returns it as bigInt eg. "4520000" */
+    /* Perform checks to make sure sci can be converted */
+    int digitsNum = countDigits(sci);
+    int periodCount = countChar(sci, '.');
+    if(periodCount > 1) {throw std::invalid_argument("You can't have more than one '.' when converting scientific notation.");}
+    int eCount = countChar(sci, 'e');
+    if(eCount > 1) {throw std::invalid_argument("You can't have more than one 'e' when converting scientific notation.");}
+    int plusCount = countChar(sci, '+');
+    if(plusCount > 1) {throw std::invalid_argument("You can't have more than one '+' when converting scientific notation.");}
+    int size = sci.size();
+    if(size != (digitsNum + periodCount + eCount + plusCount)) {
+        throw std::invalid_argument("The only characters you can have are 0123456789.e+");
+    }
+    if(size == digitsNum) {return bigInt(sci);}
+    if(eCount == 0 || plusCount == 0) {throw std::invalid_argument("Scientific notation requires one instance of 'e' and '+'");}
+    std::string firstPart;
+    std::string lastPart;
+    int eIndex = sci.find('e');
+    firstPart = sci.substr(0, eIndex);
+    lastPart = sci.substr(eIndex + 1);
+    removeNonDigits(lastPart);
+    if(countChar(firstPart, '+') != 0) {throw std::invalid_argument("+ can't occur before 'e'");}
+    decimal firstNum(firstPart);
+    int lastNum = std::floor(std::stod(lastPart));
+    return boost::multiprecision::floor(decimal(decimal(firstNum) * decimal(boost::multiprecision::pow(bigInt(10), lastNum)))).convert_to<bigInt>();
+}
 
 // Private
 // TO DO: these functions
 std::string IdleSave::buildImport() {return "";}
 std::string IdleSave::returnWarnings() {return "";}
-/* These functions in public classes (Though the function may not be public. All private functions have a comment above the function definition.)
+/* These functions are in public classes (Though the function may not be public. All private functions have a comment above the function definition.)
    These functions currently throw std::invalid_argument and std::out_of_range which can both be caught by catching std::logic_error */
 void IdleSave::Ball::setAmount(int amnt) {
     /* Check for ignoreRestrictions flag */

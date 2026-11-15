@@ -21,13 +21,13 @@ class IdleSave {
         bigInt bricksBrokenAllTime; Stats
         bigInt blackBricksBroken; Stats */
         /* int powerupsRemaining; */
-        int totalClicks; // Unknown
+        /* int totalClicks; */ // Unknown
         /*int ballFactShowing; // What ball fact is currently showing
         bool ballFactsOn;
         bool bonusAlert;
         bool effectsOn; */
-        int startTimestamp; // Unknown
-        int timeToReach100; // Unknown
+        /* int startTimestamp; // Unknown
+        int timeToReach100; // Unknown */
         /*int value17; // Basic.damageDone
         int value18; // Basic.damageDone
         int value19; // Plasma.damageDone
@@ -48,7 +48,7 @@ class IdleSave {
         int value34; // Poison.amount
         int value35; // Snow.amount - Works but Unused
         int value36; // Money.amount - Works but unused */
-        int unknownUnused;
+        /* int unknownUnused; */
         /*int value38; // Basic.speed
         int value39; // Basic.power
         int value40; // Plasma.speed
@@ -61,7 +61,7 @@ class IdleSave {
         int value47; // Cannon.power
         int value48; // Poison.speed
         int value49; // Poison.power */
-        int laserFireRate; // Unknown if used
+        /* int laserFireRate; */ // Unknown if used
         /* int laserPower;
         int clickPower; */
         /* int levelCashBonus;
@@ -119,8 +119,8 @@ class IdleSave {
         /* int blackBrickWallet; */
         /* int cursorColor;
         int backgroundColor; */
-        int bossNumber; // Difference between these are unknown
-        int bossLevel; // Difference between these are unknown
+        /* int bossNumber; // Difference between these are unknown
+        int bossLevel; // Difference between these are unknown */
         /* int skillPoints; Currency */
         /* bool soundOn;
         int soundEffects; // Unknown
@@ -386,10 +386,15 @@ class IdleSave {
                 int getTrueClickPower() {return trueClickPower;}
         };
         class UnknownClass {
-            private:
-                /* Private */
             public:
-                /* Public */
+                UnknownClass() {}
+                int totalClicks;
+                int startTimestamp; // Unknown
+                int timeToReach100; // Unknown
+                int unknownUnused;
+                int laserFireRate;
+                int bossNumber; // Difference between these are unknown
+                int bossLevel; // Difference between these are unknown
         };
         IdleSave(std::string exportCode, bool ignoreRestrictions = false) : ignoreRestrictions(ignoreRestrictions) {exportCode = "This is a temporary message";}
         IdleSave(const IdleSave&) = delete;
@@ -407,5 +412,6 @@ class IdleSave {
         PrestigeClass Prestige = PrestigeClass(*this);
         StatsClass Stats = StatsClass(*this);
         CurrencyClass Currency = CurrencyClass(*this);
-
+        OtherClass Other = OtherClass(*this);
+        UnknownClass Unknown = UnknownClass();
 };
