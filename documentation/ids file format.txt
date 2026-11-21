@@ -1,0 +1,15 @@
+Encoded in ascii (I think, I just use <fstream>, so whatever that is)
+"ids" is short for "IDle Save"
+
+The first line is the file format version number, e.g. 1. If the program sees any number than the file version it knows,
+    it should close the connection. I doubt I will ever modify the file format beyond 1, but who knows? 
+The second line is a boolean value of 1 or 0. This value is "Has this file properly closed". It is set to 0 while the
+    file is being modified in the case that the program is unexpectedly closed before file write is completed
+Beginning on the third line is the beginning of the IdleSave saves. Each IdleSave line has these values separated by a space:
+    {name} {boolean} {string}
+    name: name given by user to identify the save. Name is surrounded by double quotes (") to allow for spaces in the name.
+    boolean: 1 if --ignore-restrictions passed when making save, 0 if not passed. If --ignore-restrictions was NOT passed
+        AND boolean is 1 then user shouldn't be able to edit to these values. Once these values have been edited by user
+        with --ignore-restrictions then boolean will forever be set to 1 (unless a function is made to scan for values
+        that are unrestricted and correct them)
+    string: This is the un-encoded string that you get when decoding the "export" string from Idle Breakout.
